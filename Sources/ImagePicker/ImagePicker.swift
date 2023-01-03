@@ -2,12 +2,22 @@ import SwiftUI
 import PhotosUI
 
 public struct ImagePicker: UIViewControllerRepresentable {
-    @Binding public var pickedImages: [UIImage]
-    @Binding public var isPresented: Bool
+    @Binding private var pickedImages: [UIImage]
+    @Binding private var isPresented: Bool
     /// The maximum number of assets that can be selected. Default is 1.
     ///
     /// Setting `selectionLimit` to 0 means maximum supported by the system.
-    public var selectionLimit = 1
+    private var selectionLimit = 1
+
+    public init(
+        pickedImages: Binding<[UIImage]>,
+        isPresented: Binding<Bool>,
+        selectionLimit: Int = 1
+    ) {
+        self._pickedImages = pickedImages
+        self._isPresented = isPresented
+        self.selectionLimit = selectionLimit
+    }
 
     public func makeUIViewController(context: Context) -> some UIViewController {
         var configuration = PHPickerConfiguration(photoLibrary: .shared())
