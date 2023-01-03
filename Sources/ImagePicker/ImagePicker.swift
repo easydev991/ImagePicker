@@ -50,6 +50,7 @@ public struct ImagePicker: UIViewControllerRepresentable {
         }
 
         public func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+            var selectedImages = [UIImage]()
             let queue = DispatchQueue(label: "ImagePickerConcurrentQueue", qos: .userInteractive, attributes: .concurrent)
             let group = DispatchGroup()
             for image in results {
@@ -66,13 +67,14 @@ public struct ImagePicker: UIViewControllerRepresentable {
                             finalImage = image
                         }
                         queue.async(flags: .barrier) {
-                            self?.parent.pickedImages.append(finalImage)
+                            selectedImages.append(finalImage)
                         }
                     }
                     group.leave()
                 }
             }
             group.notify(queue: .main) { [weak self] in
+                self?.parent.pickedImages.append(contentsOf: selectedImages)
                 self?.parent.isPresented = false
             }
         }
