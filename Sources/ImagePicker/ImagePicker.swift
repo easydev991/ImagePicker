@@ -1,5 +1,5 @@
-import SwiftUI
 import PhotosUI
+import SwiftUI
 
 /// A `PHPickerViewController` wrapped inside a `UIViewControllerRepresentable`
 ///
@@ -24,7 +24,7 @@ public struct ImagePicker: UIViewControllerRepresentable {
         selectionLimit: Int = 1,
         compressionQuality: CGFloat? = nil
     ) {
-        self._pickedImages = pickedImages
+        _pickedImages = pickedImages
         self.selectionLimit = selectionLimit
         self.compressionQuality = compressionQuality
     }
@@ -38,11 +38,11 @@ public struct ImagePicker: UIViewControllerRepresentable {
         return viewController
     }
 
-    public func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {}
+    public func updateUIViewController(_: PHPickerViewController, context _: Context) {}
 
     public func makeCoordinator() -> Coordinator { .init(self) }
 
-    final public class Coordinator: PHPickerViewControllerDelegate {
+    public final class Coordinator: PHPickerViewControllerDelegate {
         private let parent: ImagePicker
 
         init(_ parent: ImagePicker) {
@@ -51,7 +51,7 @@ public struct ImagePicker: UIViewControllerRepresentable {
 
         public func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
             let imageItems = results
-                .map { $0.itemProvider }
+                .map(\.itemProvider)
                 .filter { $0.canLoadObject(ofClass: UIImage.self) }
             let group = DispatchGroup()
             var finalArray = [UIImage]()
